@@ -71,7 +71,12 @@
                     <span>March 1st</span>
                     <span>Wednesday</span>
                 </div>
-                <div class="events">a</div>
+                <div class="events">
+                    <div class="event">
+                        <span class="time">15:00</span>
+                        <span class="title">Event title</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -241,6 +246,24 @@
             display: flex;
             overflow-y: auto;
             padding: 10px;
+
+            .events {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 5px;
+                padding: 5px;
+
+                .event {
+                    width: 100%;
+                    font-size: 1.2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-around;
+                    background-color: $accent-color;
+                    border-radius: 5px;
+                }
+            }
 
             &::-webkit-scrollbar {
                 width: 10px;
