@@ -95,9 +95,8 @@
         flex-direction: column;
 
         .header {
-            height: 50px;
-            padding: 5px;
             display: flex;
+            padding: 5px;
             align-items: center;
             justify-content: space-between;
 
@@ -116,7 +115,7 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: space-around;
-                font-size: 1.2rem;
+                font-size: 1.5rem;
             }
 
             .icon {
@@ -199,7 +198,6 @@
         align-items: stretch;
 
         .header {
-            height: 50px;
             position: relative;
             display: flex;
             align-items: center;
@@ -280,5 +278,8 @@
     .header {
         width: 100%;
         border-bottom: 1px solid $foreground-color;
+
+        height: 60px;
+        min-height: 60px;
     }
 </style>
