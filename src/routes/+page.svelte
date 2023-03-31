@@ -66,7 +66,8 @@
         flex-direction: column;
 
         .header {
-            height: 40px;
+            height: 50px;
+            padding: 5px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -86,7 +87,7 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: space-around;
-                font-size: 1.5rem;
+                font-size: 1.2rem;
             }
 
             .icon {
@@ -127,11 +128,6 @@
                 justify-content: space-between;
                 padding-left: 1%;
                 padding-right: 1%;
-
-                .line {
-                    height: 1px;
-                    width: 100%;
-                }
 
                 hr {
                     border-color: $foreground-color;
