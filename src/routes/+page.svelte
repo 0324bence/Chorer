@@ -1,5 +1,5 @@
 <script lang="ts">
-    const halfHourGap = 15;
+    const halfHourGap = 20;
 </script>
 
 <div id="main-container">
