@@ -1,6 +1,15 @@
 <script lang="ts">
+    import DayInMonth from "../componenets/DayInMonth.svelte";
+
     const halfHourGap = 20;
     let windowWidth;
+    const daysInMonth: Date[] = [];
+    const currentDate = new Date();
+    const currentMonth = currentDate.toLocaleString("en-EN", { month: "long" });
+    const currentMonthLength = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+    for (let i = 0; i < currentMonthLength; i++) {
+        daysInMonth.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), i + 1));
+    }
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} />
@@ -76,18 +85,9 @@
                     </div>
                 </div>
                 <div id="month">
-                    <div class="day">
-                        <div class="day-header">
-                            <span>March 1st</span>
-                            <span>Wednesday</span>
-                        </div>
-                        <div class="events">
-                            <div class="event">
-                                <span class="time">15:00</span>
-                                <span class="title">Event title</span>
-                            </div>
-                        </div>
-                    </div>
+                    {#each daysInMonth as day}
+                        <DayInMonth {day} />
+                    {/each}
                 </div>
             </div>
         </div>
@@ -261,27 +261,16 @@
 
         #month {
             flex-grow: 1;
-            display: flex;
+            overflow: hidden;
+            display: grid;
+            grid-auto-flow: row;
+            justify-content: space-between;
+            flex-wrap: wrap;
             overflow-y: auto;
-            padding: 10px;
-
-            .events {
-                display: flex;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 5px;
-                padding: 5px;
-
-                .event {
-                    width: 100%;
-                    font-size: 1.2rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-around;
-                    background-color: $accent-color;
-                    border-radius: 5px;
-                }
-            }
+            padding: 15px;
+            grid-gap: 15px;
+            //grid-template-rows: repeat(auto-fill, 180px);
+            grid-template-columns: repeat(auto-fit, 180px);
 
             &::-webkit-scrollbar {
                 width: 10px;
@@ -289,26 +278,6 @@
 
             &::-webkit-scrollbar-thumb {
                 background-color: lighten($background-color, 10);
-            }
-
-            .day {
-                border: 1px solid $foreground-color;
-                width: 180px;
-                height: 180px;
-                border-radius: 5px;
-
-                .day-header {
-                    width: 100%;
-                    height: 50px;
-                    background-color: lighten($background-color, 25);
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    font-size: 1.2rem;
-                    border-bottom: 1px solid $foreground-color;
-                    border-radius: 5px 5px 0 0;
-                }
             }
         }
     }
