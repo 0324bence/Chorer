@@ -36,7 +36,7 @@
 </div>
 
 <style lang="scss">
-    @import "../assets/variables.scss";
+    @import "../../assets/variables";
 
     #main-container {
         background-color: $background-color;
