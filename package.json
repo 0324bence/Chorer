@@ -29,5 +29,8 @@
 		"semi": true,
 		"tabWidth": 4,
 		"trailingComma": "es5"
+	},
+	"dependencies": {
+		"pocketbase": "^0.13.1"
 	}
 }
