@@ -1,24 +1,48 @@
 <script lang="ts">
-    import pb from "../lib/pocketbase";
-    let isRegister = false;
+    import pb from "$lib/pocketbase";
+    export let form;
+    console.log(form);
+    let isRegister = form?.register || false;
 </script>
 
 <div id="main-container">
     <div id="login">
         {#if isRegister}
             <h1>Register new account</h1>
-            <form action="">
-                <input required type="text" placeholder="Username" />
-                <input required type="email" placeholder="Email" />
-                <input required type="password" placeholder="Password" />
+            <form method="POST" action="?/register">
+                <div>
+                    <input name="username" required type="text" placeholder="Username" />
+                    {#if form?.data?.username.message}
+                        <p class="error">{form?.data?.username.message}</p>
+                    {/if}
+                </div>
+                <div>
+                    <input name="email" required type="email" placeholder="Email" />
+                    {#if form?.data?.email.message}
+                        <p class="error">{form?.data?.email.message}</p>
+                    {/if}
+                </div>
+                <input name="password" required minlength="8" maxlength="72" type="password" placeholder="Password" />
                 <input type="submit" value="Register" />
             </form>
             <button class="register-switch" on:click={() => (isRegister = false)}>Log in to account</button>
         {:else}
             <h1>Log in</h1>
-            <form action="">
-                <input required type="text" placeholder="Username" />
-                <input required type="password" placeholder="Password" />
+            <form method="POST" action="?/login">
+                <input name="username" required type="text" placeholder="Username" />
+                <div>
+                    <input
+                        name="password"
+                        required
+                        minlength="8"
+                        maxlength="72"
+                        type="password"
+                        placeholder="Password"
+                    />
+                    {#if form?.message}
+                        <p class="error">{form?.message}</p>
+                    {/if}
+                </div>
                 <input type="submit" value="Login" />
             </form>
             <button class="register-switch" on:click={() => (isRegister = true)}>Register new account</button>
@@ -70,6 +94,15 @@
                 align-items: center;
                 gap: 20px;
                 color: $background-color;
+                div {
+                    width: 100%;
+                }
+
+                .error {
+                    margin-top: 5px;
+                    color: red;
+                    text-decoration: underline;
+                }
 
                 input {
                     width: 80%;

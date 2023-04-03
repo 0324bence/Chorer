@@ -2,7 +2,7 @@
     import DayInMonth from "../../componenets/DayInMonth.svelte";
 
     const halfHourGap = 20;
-    let windowWidth;
+    let windowWidth: number;
     const daysInMonth: Date[] = [];
     const currentDate = new Date();
     const currentMonth = currentDate.toLocaleString("en-EN", { month: "long" });
