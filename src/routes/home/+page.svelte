@@ -1,15 +1,38 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import DayInMonth from "../../componenets/DayInMonth.svelte";
+    import { fly } from "svelte/transition";
 
     const halfHourGap = 20;
     let windowWidth: number;
-    const daysInMonth: Date[] = [];
-    const currentDate = new Date();
-    const currentMonth = currentDate.toLocaleString("en-EN", { month: "long" });
-    const currentMonthLength = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+    let daysInMonth: Date[] = [];
+    const realCurrentDate = new Date();
+    let currentMonthNumber = realCurrentDate.getMonth();
+    let currentDayNumber = realCurrentDate.getDate();
+    let position = true;
+
+    let currentDate = new Date(realCurrentDate.getFullYear(), realCurrentDate.getMonth(), realCurrentDate.getDate());
+    let currentMonth = currentDate.toLocaleString("en-EN", { month: "long" });
+    let currentMonthLength = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
     for (let i = 0; i < currentMonthLength; i++) {
         daysInMonth.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), i + 1));
     }
+
+    $: {
+        position = false;
+        daysInMonth = [];
+        currentDate = new Date(realCurrentDate.getFullYear(), currentMonthNumber, currentDayNumber);
+        currentMonth = currentDate.toLocaleString("en-EN", { month: "long" });
+        currentMonthLength = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+    for (let i = 0; i < currentMonthLength; i++) {
+        daysInMonth.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), i + 1));
+    }
+        position = true;
+    }
+
+    onMount(() => {
+        windowWidth = window.innerWidth;
+    });
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} />
@@ -64,9 +87,9 @@
         <div id="middle-container">
             <div id="month-container">
                 <div class="header">
-                    <div id="title"><span>March</span></div>
+                    <div id="title"><span>{currentDate.getFullYear()} - {currentMonth}</span></div>
                     <div id="switcher">
-                        <button class="icon">
+                        <button class="icon" on:click={() => currentMonthNumber--}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                                 <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
                                 <path
@@ -74,7 +97,7 @@
                                 />
                             </svg>
                         </button>
-                        <button class="icon">
+                        <button class="icon" on:click={() => currentMonthNumber++}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
                                 <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
                                 <path
@@ -84,8 +107,10 @@
                         </button>
                     </div>
                 </div>
-                <div id="month">
-                    {#each daysInMonth as day}
+                <div id="month-enclosure">
+                    {#key currentMonthNumber}
+                        <div transition:fly={{ x: 600, duration: 500 }} id="month">
+                            {#each daysInMonth as day (day.toISOString())}
                         <DayInMonth {day} />
                     {/each}
                 </div>
@@ -259,8 +284,17 @@
             }
         }
 
-        #month {
+        #month-enclosure {
             flex-grow: 1;
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        #month {
+            position: absolute;
+            height: 100%;
+            width: 100%;
             overflow: hidden;
             display: grid;
             grid-auto-flow: row;
