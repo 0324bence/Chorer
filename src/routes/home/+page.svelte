@@ -36,7 +36,7 @@
         MonthLength = new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth() + 1, 0).getDate();
         for (let i = 0; i < MonthLength; i++) {
             daysInMonth.push(new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth(), i + 1));
-    }
+        }
         position = true;
     }
 
@@ -83,16 +83,16 @@
         <div id="day-container">
             {#key currentDayNumber}
                 <div transition:fly={{ x: 50, duration: 200 }} id="current-day">
-            {#each Array(24) as k, i}
-                <div class="day" style="gap: {halfHourGap}px">
-                    <hr class="hidden" />
-                    <div class="dashed" />
-                    <div class="numline">
-                        <span>{i + 1}</span>
-                        <hr />
-                    </div>
-                </div>
-            {/each}
+                    {#each Array(24) as k, i}
+                        <div class="day" style="gap: {halfHourGap}px">
+                            <hr class="hidden" />
+                            <div class="dashed" />
+                            <div class="numline">
+                                <span>{i + 1}</span>
+                                <hr />
+                            </div>
+                        </div>
+                    {/each}
                 </div>
             {/key}
         </div>
@@ -128,10 +128,6 @@
                                 <DayInMonth {day} />
                             {/each}
                         </div>
-                        <div transition:fly={{ x: 600, duration: 500 }} id="month">
-                            {#each daysInMonth as day (day.toISOString())}
-                        <DayInMonth {day} />
-                    {/each}
                     {/key}
                 </div>
             </div>
@@ -216,43 +212,43 @@
                 display: flex;
                 flex-direction: column;
 
-            .day {
-                flex-grow: 1;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                padding-left: 1%;
-                padding-right: 1%;
-
-                hr {
-                    border-color: $foreground-color;
+                .day {
+                    flex-grow: 1;
                     width: 100%;
-                }
-
-                .hidden {
-                    visibility: hidden;
-                }
-
-                .dashed {
-                    height: 1px;
-                    background: repeating-linear-gradient(
-                        to right,
-                        transparent,
-                        transparent 5px,
-                        $foreground-color 5px,
-                        $foreground-color 10px
-                    );
-                }
-
-                .numline {
                     display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    height: 1px;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    padding-left: 1%;
+                    padding-right: 1%;
 
                     hr {
-                        flex-grow: 1;
+                        border-color: $foreground-color;
+                        width: 100%;
+                    }
+
+                    .hidden {
+                        visibility: hidden;
+                    }
+
+                    .dashed {
+                        height: 1px;
+                        background: repeating-linear-gradient(
+                            to right,
+                            transparent,
+                            transparent 5px,
+                            $foreground-color 5px,
+                            $foreground-color 10px
+                        );
+                    }
+
+                    .numline {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        height: 1px;
+
+                        hr {
+                            flex-grow: 1;
                         }
                     }
                 }
