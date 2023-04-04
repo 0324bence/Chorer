@@ -1,5 +1,4 @@
 <script lang="ts">
-    import pb from "$lib/pocketbase";
     export let form;
     console.log(form);
     let isRegister = form?.register || false;
