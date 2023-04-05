@@ -23,8 +23,12 @@
     }
 
     let currentDayDate = new Date(realCurrentDate.getFullYear(), realCurrentDate.getMonth(), realCurrentDate.getDate());
+    let dayAnimationMultiplier = 1;
 
     $: {
+        const dayDifference = currentDayNumber - currentDayDate.getDate();
+        dayAnimationMultiplier = dayDifference / Math.abs(dayDifference);
+        dayAnimationMultiplier = dayAnimationMultiplier === 0 ? 1 : dayAnimationMultiplier;
         currentDayDate = new Date(realCurrentDate.getFullYear(), realCurrentDate.getMonth(), currentDayNumber);
     }
 
@@ -82,7 +86,7 @@
         </div>
         <div id="day-container">
             {#key currentDayNumber}
-                <div transition:fly={{ x: 50, duration: 200 }} id="current-day">
+                <div transition:fly={{ x: 50 * dayAnimationMultiplier, duration: 100 }} id="current-day">
                     {#each Array(24) as k, i}
                         <div class="day" style="gap: {halfHourGap}px">
                             <hr class="hidden" />
