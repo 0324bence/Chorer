@@ -139,16 +139,17 @@
     @import "../../assets/variables";
 
     #content-container {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 4fr;
         height: 100%;
         flex-grow: 10;
     }
 
     #left-container {
-        flex-grow: 1;
         border-right: 1px solid $foreground-color;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
 
         .header {
             display: flex;
@@ -198,6 +199,7 @@
             height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
+            display: flex;
 
             &::-webkit-scrollbar {
                 width: 10px;
@@ -211,6 +213,7 @@
                 position: relative;
                 display: flex;
                 flex-direction: column;
+                width: 100%;
 
                 .day {
                     flex-grow: 1;
@@ -257,7 +260,6 @@
     }
 
     #middle-container {
-        flex-grow: 9;
         height: 100%;
         border-right: 1px solid $foreground-color;
     }
