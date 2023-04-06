@@ -6,7 +6,7 @@
 
     export let data: LayoutData;
 
-    const halfHourGap = 20;
+    const HALF_HOUR_GAP = 20;
     let windowWidth: number;
     let daysInMonth: Date[] = [];
     const realCurrentDate = new Date();
@@ -60,19 +60,19 @@
         const startHour = startDate.getHours();
         const minutesBefore = startDate.getMinutes() + startHour * 60;
         const halfHoursBefore = minutesBefore / 30;
-        const offset = halfHoursBefore * halfHourGap + halfHoursBefore * 2;
+        const offset = halfHoursBefore * HALF_HOUR_GAP + halfHoursBefore * 2;
         let height = 0;
         //calculate the duration of the event and multiply it by the gap between half hours
         if (endDate) {
             const endHour = endDate.getHours();
             const minutesAfter = endDate.getMinutes() + endHour * 60;
             const halfHoursAfter = minutesAfter / 30;
-            height = (halfHoursAfter - halfHoursBefore) * halfHourGap + (halfHoursAfter - halfHoursBefore) * 2;
+            height = (halfHoursAfter - halfHoursBefore) * HALF_HOUR_GAP + (halfHoursAfter - halfHoursBefore) * 2;
         }
         return {
             ...value,
             offset,
-            height: height > 0 ? height - 2 : halfHourGap,
+            height: height > 0 ? height - 2 : HALF_HOUR_GAP,
             startDate: new Date(value.startTime),
             formattedTime: startDate.toLocaleTimeString("en-EN", {
                 hour: "2-digit",
@@ -142,7 +142,7 @@
             {#key currentDayNumber}
                 <div transition:fly={{ x: 50 * dayAnimationMultiplier, duration: 100 }} id="current-day">
                     {#each Array(24) as k, i}
-                        <div class="day" style="gap: {halfHourGap}px">
+                        <div class="day" style="gap: {HALF_HOUR_GAP}px">
                             <hr class="hidden" />
                             <div class="dashed" />
                             <div class="numline">
@@ -450,6 +450,7 @@
     @media only screen and (max-width: 712px) {
         #content-container {
             width: 100%;
+            grid-template-columns: 1fr;
         }
         #left-container {
             width: 100%;

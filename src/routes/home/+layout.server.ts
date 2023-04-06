@@ -29,7 +29,6 @@ export const load = (async ({ locals }) => {
 
     const serializedRecords = records.map<Event>(val => ({ ...val }));
 
-    console.log(serializedRecords);
     return {
         events: serializedRecords
     };
