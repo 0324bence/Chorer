@@ -298,8 +298,8 @@
                     padding-right: 1%;
                     .event {
                         position: relative;
-                        width: 90%;
-                        left: 10%;
+                        width: 92%;
+                        left: 8%;
                         top: calc(3px + 20px);
                         background-color: $accent-color;
                         border-radius: 4px;
