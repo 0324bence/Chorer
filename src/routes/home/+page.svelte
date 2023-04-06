@@ -2,6 +2,9 @@
     import { onMount } from "svelte";
     import DayInMonth from "../../componenets/DayInMonth.svelte";
     import { fly } from "svelte/transition";
+    import type { LayoutData } from "./$types";
+
+    export let data: LayoutData;
 
     const halfHourGap = 20;
     let windowWidth: number;
@@ -47,6 +50,47 @@
     onMount(() => {
         windowWidth = window.innerWidth;
     });
+
+    const events = data.events.map((value, index) => {
+        const startDate = new Date(value.startTime);
+        let endDate;
+        if (value.endTime) endDate = new Date(value.endTime);
+
+        // TODO UTC or NOT UTC?
+        const startHour = startDate.getHours();
+        const minutesBefore = startDate.getMinutes() + startHour * 60;
+        const halfHoursBefore = minutesBefore / 30;
+        const offset = halfHoursBefore * halfHourGap + halfHoursBefore * 2;
+        let height = 0;
+        //calculate the duration of the event and multiply it by the gap between half hours
+        if (endDate) {
+            const endHour = endDate.getHours();
+            const minutesAfter = endDate.getMinutes() + endHour * 60;
+            const halfHoursAfter = minutesAfter / 30;
+            height = (halfHoursAfter - halfHoursBefore) * halfHourGap + (halfHoursAfter - halfHoursBefore) * 2;
+        }
+        return {
+            ...value,
+            offset,
+            height: height > 0 ? height - 2 : halfHourGap,
+            startDate: new Date(value.startTime),
+            formattedTime: startDate.toLocaleTimeString("en-EN", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            })
+        };
+    });
+
+    function compareDates(date1: Date, date2: Date) {
+        if (
+            date1.getFullYear() === date2.getFullYear() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate()
+        )
+            return true;
+        return false;
+    }
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} />
@@ -107,6 +151,19 @@
                             </div>
                         </div>
                     {/each}
+                    <div id="event-container">
+                        {#each events as event}
+                            {#if compareDates(event.startDate, currentDayDate)}
+                                <div class="event" style="top: {event.offset + 1}px; height: {event.height}px">
+                                    <div class="data">
+                                        <span>{event.formattedTime}</span>
+                                        <span>{event.title}</span>
+                                        <div class="desc">{event.description}</div>
+                                    </div>
+                                </div>
+                            {/if}
+                        {/each}
+                    </div>
                 </div>
             {/key}
         </div>
@@ -232,6 +289,37 @@
                 display: flex;
                 flex-direction: column;
                 width: 100%;
+
+                #event-container {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    padding-left: 1%;
+                    padding-right: 1%;
+                    .event {
+                        position: relative;
+                        width: 90%;
+                        left: 10%;
+                        top: calc(3px + 20px);
+                        background-color: $accent-color;
+                        border-radius: 4px;
+                        overflow: hidden;
+
+                        .data {
+                            width: 100%;
+                            display: flex;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                            padding-left: 10px;
+                            padding-right: 10px;
+
+                            .desc {
+                                width: 100%;
+                                text-align: center;
+                            }
+                        }
+                    }
+                }
 
                 .day {
                     flex-grow: 1;
