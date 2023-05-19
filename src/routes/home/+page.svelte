@@ -9,11 +9,13 @@
     const HALF_HOUR_GAP = 20;
     let windowWidth: number;
     let daysInMonth: Date[] = [];
+
+    //Get the current date of user
     const realCurrentDate = new Date();
     let currentMonthNumber = realCurrentDate.getMonth();
     let currentDayNumber = realCurrentDate.getDate();
-    let position = true;
 
+    //Get the currently selected month
     let currentMonthDate = new Date(
         realCurrentDate.getFullYear(),
         realCurrentDate.getMonth(),
@@ -25,9 +27,11 @@
         daysInMonth.push(new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth(), i + 1));
     }
 
+    //Get the currently selected day
     let currentDayDate = new Date(realCurrentDate.getFullYear(), realCurrentDate.getMonth(), realCurrentDate.getDate());
     let dayAnimationMultiplier = 1;
 
+    //Change the current selected day
     $: {
         const dayDifference = currentDayNumber - currentDayDate.getDate();
         dayAnimationMultiplier = dayDifference / Math.abs(dayDifference);
@@ -35,8 +39,8 @@
         currentDayDate = new Date(realCurrentDate.getFullYear(), realCurrentDate.getMonth(), currentDayNumber);
     }
 
+    //Change the current selected month
     $: {
-        position = false;
         daysInMonth = [];
         currentMonthDate = new Date(realCurrentDate.getFullYear(), currentMonthNumber, realCurrentDate.getDate());
         SelectedMonth = currentMonthDate.toLocaleString("en-EN", { month: "long" });
@@ -44,13 +48,13 @@
         for (let i = 0; i < MonthLength; i++) {
             daysInMonth.push(new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth(), i + 1));
         }
-        position = true;
     }
 
     onMount(() => {
         windowWidth = window.innerWidth;
     });
 
+    //map events to the correct format
     const events = data.events.map((value, index) => {
         const startDate = new Date(value.startTime);
         let endDate;
