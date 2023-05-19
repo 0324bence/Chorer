@@ -260,7 +260,6 @@
                 padding: 5px;
                 background: none;
                 border: none;
-                outline: none;
                 cursor: pointer;
                 display: grid;
                 place-items: center;
@@ -408,7 +407,6 @@
                     padding: 5px;
                     background: none;
                     border: none;
-                    outline: none;
                     cursor: pointer;
 
                     svg {
