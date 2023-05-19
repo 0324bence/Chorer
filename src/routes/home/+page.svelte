@@ -95,6 +95,20 @@
             return true;
         return false;
     }
+
+    function SwitchDay(e: any) {
+        const day = e.detail;
+        const dayDate = new Date(day.getFullYear(), day.getMonth(), day.getDate());
+        const localCurrentDayDate = new Date(
+            currentDayDate.getFullYear(),
+            currentDayDate.getMonth(),
+            currentDayDate.getDate()
+        );
+        const diff = dayDate.getTime() - localCurrentDayDate.getTime();
+        const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+        console.log(diffDays);
+        currentDayNumber += diffDays;
+    }
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} />
@@ -200,7 +214,13 @@
                     {#key currentMonthNumber}
                         <div transition:fly={{ x: 600, duration: 200 }} id="month">
                             {#each daysInMonth as day (day.toISOString())}
-                                <DayInMonth {day} />
+                                <DayInMonth
+                                    {day}
+                                    events={events.filter(v => compareDates(v.startDate, day))}
+                                    on:dayClicked={e => {
+                                        SwitchDay(e);
+                                    }}
+                                />
                             {/each}
                         </div>
                     {/key}

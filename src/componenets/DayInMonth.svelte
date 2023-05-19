@@ -1,17 +1,42 @@
 <script lang="ts">
+    import { createEventDispatcher } from "svelte";
+
+    interface Event {
+        collectionId: string;
+        collectionName: string;
+        created: string;
+        description: string;
+        endTime: string;
+        id: string;
+        owner: string;
+        startTime: string;
+        title: string;
+        updated: string;
+        expand: object;
+        formattedTime: string;
+    }
     export let day: Date;
+    export let events: Array<Event>;
+
+    const dispatcher = createEventDispatcher();
+
+    function handleClick() {
+        dispatcher("dayClicked", day);
+    }
 </script>
 
 <div class="day">
-    <div class="day-header">
+    <button class="day-header" on:click={() => handleClick()}>
         <span>{day.toLocaleString("en-EN", { month: "long", day: "numeric" })}.</span>
         <span>{day.toLocaleString("en-En", { weekday: "long" })}</span>
-    </div>
+    </button>
     <div class="events">
-        <div class="event">
-            <span class="time">15:00</span>
-            <span class="title">Event title</span>
-        </div>
+        {#each events as event}
+            <div class="event">
+                <span class="time">{event.formattedTime}</span>
+                <span class="title">{event.title}</span>
+            </div>
+        {/each}
     </div>
 </div>
 
@@ -24,6 +49,10 @@
         border-radius: 5px;
 
         .day-header {
+            cursor: pointer;
+            color: inherit;
+            outline: none;
+            border: none;
             width: 100%;
             height: 50px;
             background-color: lighten($background-color, 25);
@@ -34,6 +63,14 @@
             font-size: 1.2rem;
             border-bottom: 1px solid $foreground-color;
             border-radius: 5px 5px 0 0;
+
+            &:hover {
+                background-color: lighten($background-color, 40);
+            }
+
+            &:focus {
+                background-color: lighten($background-color, 40);
+            }
         }
 
         .events {
