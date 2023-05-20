@@ -1,5 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
+    import compareDates from "../lib/CompareDates";
 
     interface Event {
         collectionId: string;

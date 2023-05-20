@@ -3,6 +3,7 @@
     import DayInMonth from "../../componenets/DayInMonth.svelte";
     import { fly } from "svelte/transition";
     import type { LayoutData } from "./$types";
+    import compareDates from "../../lib/CompareDates";
 
     export let data: LayoutData;
 
