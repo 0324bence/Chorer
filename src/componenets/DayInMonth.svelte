@@ -3,17 +3,7 @@
     import compareDates from "../lib/CompareDates";
 
     interface Event {
-        collectionId: string;
-        collectionName: string;
-        created: string;
-        description: string;
-        endTime: string;
-        id: string;
-        owner: string;
-        startTime: string;
         title: string;
-        updated: string;
-        expand: object;
         formattedTime: string;
     }
     export let day: Date;
