@@ -87,16 +87,6 @@
         };
     });
 
-    function compareDates(date1: Date, date2: Date) {
-        if (
-            date1.getFullYear() === date2.getFullYear() &&
-            date1.getMonth() === date2.getMonth() &&
-            date1.getDate() === date2.getDate()
-        )
-            return true;
-        return false;
-    }
-
     function SwitchDay(e: any) {
         const day = e.detail;
         const dayDate = new Date(day.getFullYear(), day.getMonth(), day.getDate());
@@ -235,6 +225,7 @@
     @import "../../assets/variables";
 
     #content-container {
+        position: relative;
         display: grid;
         grid-template-columns: 1fr 4fr;
         height: 100%;
