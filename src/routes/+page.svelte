@@ -11,13 +11,13 @@
             <form method="POST" action="?/register">
                 <div>
                     <input name="username" required type="text" placeholder="Username" />
-                    {#if form?.data?.username.message}
+                    {#if form?.data?.username?.message}
                         <p class="error">{form?.data?.username.message}</p>
                     {/if}
                 </div>
                 <div>
                     <input name="email" required type="email" placeholder="Email" />
-                    {#if form?.data?.email.message}
+                    {#if form?.data?.email?.message}
                         <p class="error">{form?.data?.email.message}</p>
                     {/if}
                 </div>

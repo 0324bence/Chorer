@@ -2,15 +2,20 @@
     import { onMount } from "svelte";
     import DayInMonth from "../../componenets/DayInMonth.svelte";
     import { fly } from "svelte/transition";
+    import type { LayoutData } from "./$types";
 
-    const halfHourGap = 20;
+    export let data: LayoutData;
+
+    const HALF_HOUR_GAP = 20;
     let windowWidth: number;
     let daysInMonth: Date[] = [];
+
+    //Get the current date of user
     const realCurrentDate = new Date();
     let currentMonthNumber = realCurrentDate.getMonth();
     let currentDayNumber = realCurrentDate.getDate();
-    let position = true;
 
+    //Get the currently selected month
     let currentMonthDate = new Date(
         realCurrentDate.getFullYear(),
         realCurrentDate.getMonth(),
@@ -22,9 +27,11 @@
         daysInMonth.push(new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth(), i + 1));
     }
 
+    //Get the currently selected day
     let currentDayDate = new Date(realCurrentDate.getFullYear(), realCurrentDate.getMonth(), realCurrentDate.getDate());
     let dayAnimationMultiplier = 1;
 
+    //Change the current selected day
     $: {
         const dayDifference = currentDayNumber - currentDayDate.getDate();
         dayAnimationMultiplier = dayDifference / Math.abs(dayDifference);
@@ -32,8 +39,8 @@
         currentDayDate = new Date(realCurrentDate.getFullYear(), realCurrentDate.getMonth(), currentDayNumber);
     }
 
+    //Change the current selected month
     $: {
-        position = false;
         daysInMonth = [];
         currentMonthDate = new Date(realCurrentDate.getFullYear(), currentMonthNumber, realCurrentDate.getDate());
         SelectedMonth = currentMonthDate.toLocaleString("en-EN", { month: "long" });
@@ -41,12 +48,67 @@
         for (let i = 0; i < MonthLength; i++) {
             daysInMonth.push(new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth(), i + 1));
         }
-        position = true;
     }
 
     onMount(() => {
         windowWidth = window.innerWidth;
     });
+
+    //map events to the correct format
+    const events = data.events.map((value, index) => {
+        const startDate = new Date(value.startTime);
+        let endDate;
+        if (value.endTime) endDate = new Date(value.endTime);
+
+        // TODO UTC or NOT UTC?
+        const startHour = startDate.getHours();
+        const minutesBefore = startDate.getMinutes() + startHour * 60;
+        const halfHoursBefore = minutesBefore / 30;
+        const offset = halfHoursBefore * HALF_HOUR_GAP + halfHoursBefore * 2;
+        let height = 0;
+        //calculate the duration of the event and multiply it by the gap between half hours
+        if (endDate) {
+            const endHour = endDate.getHours();
+            const minutesAfter = endDate.getMinutes() + endHour * 60;
+            const halfHoursAfter = minutesAfter / 30;
+            height = (halfHoursAfter - halfHoursBefore) * HALF_HOUR_GAP + (halfHoursAfter - halfHoursBefore) * 2;
+        }
+        return {
+            ...value,
+            offset,
+            height: height > 0 ? height - 2 : HALF_HOUR_GAP,
+            startDate: new Date(value.startTime),
+            formattedTime: startDate.toLocaleTimeString("en-EN", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            })
+        };
+    });
+
+    function compareDates(date1: Date, date2: Date) {
+        if (
+            date1.getFullYear() === date2.getFullYear() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate()
+        )
+            return true;
+        return false;
+    }
+
+    function SwitchDay(e: any) {
+        const day = e.detail;
+        const dayDate = new Date(day.getFullYear(), day.getMonth(), day.getDate());
+        const localCurrentDayDate = new Date(
+            currentDayDate.getFullYear(),
+            currentDayDate.getMonth(),
+            currentDayDate.getDate()
+        );
+        const diff = dayDate.getTime() - localCurrentDayDate.getTime();
+        const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+        console.log(diffDays);
+        currentDayNumber += diffDays;
+    }
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} />
@@ -98,7 +160,7 @@
             {#key currentDayNumber}
                 <div transition:fly={{ x: 50 * dayAnimationMultiplier, duration: 100 }} id="current-day">
                     {#each Array(24) as k, i}
-                        <div class="day" style="gap: {halfHourGap}px">
+                        <div class="day" style="gap: {HALF_HOUR_GAP}px">
                             <hr class="hidden" />
                             <div class="dashed" />
                             <div class="numline">
@@ -107,6 +169,19 @@
                             </div>
                         </div>
                     {/each}
+                    <div id="event-container">
+                        {#each events as event}
+                            {#if compareDates(event.startDate, currentDayDate)}
+                                <div class="event" style="top: {event.offset + 1}px; height: {event.height}px">
+                                    <div class="data">
+                                        <span>{event.formattedTime}</span>
+                                        <span>{event.title}</span>
+                                        <div class="desc">{event.description}</div>
+                                    </div>
+                                </div>
+                            {/if}
+                        {/each}
+                    </div>
                 </div>
             {/key}
         </div>
@@ -139,7 +214,13 @@
                     {#key currentMonthNumber}
                         <div transition:fly={{ x: 600, duration: 200 }} id="month">
                             {#each daysInMonth as day (day.toISOString())}
-                                <DayInMonth {day} />
+                                <DayInMonth
+                                    {day}
+                                    events={events.filter(v => compareDates(v.startDate, day))}
+                                    on:dayClicked={e => {
+                                        SwitchDay(e);
+                                    }}
+                                />
                             {/each}
                         </div>
                     {/key}
@@ -199,7 +280,6 @@
                 padding: 5px;
                 background: none;
                 border: none;
-                outline: none;
                 cursor: pointer;
                 display: grid;
                 place-items: center;
@@ -232,6 +312,37 @@
                 display: flex;
                 flex-direction: column;
                 width: 100%;
+
+                #event-container {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    padding-left: 1%;
+                    padding-right: 1%;
+                    .event {
+                        position: relative;
+                        width: 92%;
+                        left: 8%;
+                        top: calc(3px + 20px);
+                        background-color: $accent-color;
+                        border-radius: 4px;
+                        overflow: hidden;
+
+                        .data {
+                            width: 100%;
+                            display: flex;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                            padding-left: 10px;
+                            padding-right: 10px;
+
+                            .desc {
+                                width: 100%;
+                                text-align: center;
+                            }
+                        }
+                    }
+                }
 
                 .day {
                     flex-grow: 1;
@@ -316,7 +427,6 @@
                     padding: 5px;
                     background: none;
                     border: none;
-                    outline: none;
                     cursor: pointer;
 
                     svg {
@@ -362,6 +472,7 @@
     @media only screen and (max-width: 712px) {
         #content-container {
             width: 100%;
+            grid-template-columns: 1fr;
         }
         #left-container {
             width: 100%;
