@@ -43,5 +43,8 @@ export const actions = {
         } catch (err: any) {
             return fail(400, { register: true, ...err.data });
         }
+    },
+    logout: async ({ locals }) => {
+        await locals.pb.authStore.clear();
     }
 } satisfies Actions;
