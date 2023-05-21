@@ -17,7 +17,7 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="day {compareDates(new Date(), day) ? 'today' : ''}" on:click={() => handleClick()}>
+<button class="day {compareDates(new Date(), day) ? 'today' : ''}" on:click={() => handleClick()}>
     <div class="day-header">
         <span>{day.toLocaleString("en-EN", { month: "long", day: "numeric" })}.</span>
         <span>{day.toLocaleString("en-En", { weekday: "long" })}</span>
@@ -30,11 +30,17 @@
             </div>
         {/each}
     </div>
-</div>
+</button>
 
 <style lang="scss">
     @import "../assets/variables.scss";
     .day {
+        outline: none;
+        display: flex;
+        background: none;
+        color: inherit;
+        flex-direction: column;
+        align-items: stretch;
         border: 1px solid $foreground-color;
         width: 180px;
         height: 180px;
@@ -43,6 +49,10 @@
 
         &:hover {
             cursor: pointer;
+            background-color: lighten($background-color, 10);
+        }
+
+        &:focus {
             background-color: lighten($background-color, 10);
         }
 
@@ -65,14 +75,6 @@
             font-size: 1.2rem;
             border-bottom: 1px solid $foreground-color;
             border-radius: 5px 5px 0 0;
-
-            &:hover {
-                background-color: lighten($background-color, 40);
-            }
-
-            &:focus {
-                background-color: lighten($background-color, 40);
-            }
         }
 
         .events {
