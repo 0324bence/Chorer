@@ -1,18 +1,9 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
+    import compareDates from "../lib/CompareDates";
 
     interface Event {
-        collectionId: string;
-        collectionName: string;
-        created: string;
-        description: string;
-        endTime: string;
-        id: string;
-        owner: string;
-        startTime: string;
         title: string;
-        updated: string;
-        expand: object;
         formattedTime: string;
     }
     export let day: Date;
@@ -25,11 +16,12 @@
     }
 </script>
 
-<div class="day">
-    <button class="day-header" on:click={() => handleClick()}>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<button class="day {compareDates(new Date(), day) ? 'today' : ''}" on:click={() => handleClick()}>
+    <div class="day-header">
         <span>{day.toLocaleString("en-EN", { month: "long", day: "numeric" })}.</span>
         <span>{day.toLocaleString("en-En", { weekday: "long" })}</span>
-    </button>
+    </div>
     <div class="events">
         {#each events as event}
             <div class="event">
@@ -38,15 +30,35 @@
             </div>
         {/each}
     </div>
-</div>
+</button>
 
 <style lang="scss">
     @import "../assets/variables.scss";
     .day {
+        outline: none;
+        display: flex;
+        background: none;
+        color: inherit;
+        flex-direction: column;
+        align-items: stretch;
         border: 1px solid $foreground-color;
         width: 180px;
         height: 180px;
         border-radius: 5px;
+        transition: background-color 0.1s linear;
+
+        &:hover {
+            cursor: pointer;
+            background-color: lighten($background-color, 10);
+        }
+
+        &:focus {
+            background-color: lighten($background-color, 10);
+        }
+
+        &.today .day-header {
+            background-color: lighten($accent-color, 10);
+        }
 
         .day-header {
             cursor: pointer;
@@ -63,14 +75,6 @@
             font-size: 1.2rem;
             border-bottom: 1px solid $foreground-color;
             border-radius: 5px 5px 0 0;
-
-            &:hover {
-                background-color: lighten($background-color, 40);
-            }
-
-            &:focus {
-                background-color: lighten($background-color, 40);
-            }
         }
 
         .events {

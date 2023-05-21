@@ -3,6 +3,7 @@
     import DayInMonth from "../../componenets/DayInMonth.svelte";
     import { fly } from "svelte/transition";
     import type { LayoutData } from "./$types";
+    import compareDates from "../../lib/CompareDates";
 
     export let data: LayoutData;
 
@@ -85,16 +86,6 @@
             })
         };
     });
-
-    function compareDates(date1: Date, date2: Date) {
-        if (
-            date1.getFullYear() === date2.getFullYear() &&
-            date1.getMonth() === date2.getMonth() &&
-            date1.getDate() === date2.getDate()
-        )
-            return true;
-        return false;
-    }
 
     function SwitchDay(e: any) {
         const day = e.detail;
@@ -234,6 +225,7 @@
     @import "../../assets/variables";
 
     #content-container {
+        position: relative;
         display: grid;
         grid-template-columns: 1fr 4fr;
         height: 100%;
